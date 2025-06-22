@@ -210,7 +210,7 @@ function playAgain() {
         </div>
       </template>
 
-      <div class="game-board-area">
+      <div class="game-board-area" :class="{ 'solo-mode': numberOfPlayers === 1 }">
         <h2 class="turn-indicator">{{ turnMessage }}</h2>
         <div class="game-board" :style="boardStyle">
           <Card
@@ -353,6 +353,10 @@ function playAgain() {
 
 .game-board-area {
   flex-grow: 1;
+}
+
+.game-board-area.solo-mode {
+  flex-grow: 0;
 }
 
 .turn-indicator {
