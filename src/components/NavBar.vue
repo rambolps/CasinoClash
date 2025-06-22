@@ -7,6 +7,7 @@ import { RouterLink } from 'vue-router'
     <nav class="navbar-container">
       <router-link to="/" class="nav-link">Home</router-link>
       <router-link to="/play" class="nav-link">Play</router-link>
+      <router-link to="/rules" class="nav-link">Rules</router-link>
     </nav>
   </header>
 </template>
