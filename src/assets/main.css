@@ -1,6 +1,6 @@
 body {
   font-family: 'Lora', serif;
-  background-color: #1a472a; /* Casino Green */
+  background-color: #1a472a;
   background-image: radial-gradient(#ffffff1a 1px, transparent 1px);
   background-size: 15px 15px;
   padding: 0 !important;
@@ -26,4 +26,10 @@ body {
 }
 .emph:hover {
   transform: scale(1.05);
+}
+
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
