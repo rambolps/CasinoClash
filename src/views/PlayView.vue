@@ -170,7 +170,7 @@ function endGame() {
     } else if (p2Score > p1Score) {
       endGameInfo.value.title = 'Player 2 Wins!'
     } else {
-      endGameInfo.value.title = "It's a Push!"
+      endGameInfo.value.title = "It's a Tie!"
     }
     endGameInfo.value.scores = `Final Score: ${p1Score} - ${p2Score}`
   }
