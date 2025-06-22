@@ -21,8 +21,10 @@ const LEVEL_CONFIG = {
   hard: { pairs: 10, cols: 5 },
 }
 
-const gameStatus = ref('selecting')
+const gameStatus = ref('selecting_players')
+const numberOfPlayers = ref(0)
 const turnMessage = ref('')
+const mistakes = ref(0)
 const state = ref({
   scores: { player1: 0, player2: 0 },
   currentPlayer: 1,
@@ -43,6 +45,11 @@ const boardStyle = computed(() => {
   }
 })
 
+function setPlayerMode(players) {
+  numberOfPlayers.value = players
+  gameStatus.value = 'selecting_level'
+}
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -58,6 +65,7 @@ function startGame(level) {
   state.value.flippedCards = []
   state.value.matchedPairs = 0
   state.value.isLocked = true
+  mistakes.value = 0
 
   const config = LEVEL_CONFIG[level]
   state.value.totalPairs = config.pairs
@@ -86,8 +94,12 @@ function startGame(level) {
   }, 3000)
 }
 
-function updateTurnIndicator(message = '') {
-  turnMessage.value = message || `Player ${state.value.currentPlayer}'s Turn`
+function updateTurnIndicator() {
+  if (numberOfPlayers.value === 1) {
+    turnMessage.value = `Mistakes: ${mistakes.value}`
+  } else {
+    turnMessage.value = `Player ${state.value.currentPlayer}'s Turn`
+  }
 }
 
 function onCardClick(card) {
@@ -119,50 +131,69 @@ function checkForMatch() {
 function handleMatch(card1, card2) {
   card1.isMatched = true
   card2.isMatched = true
-  state.value.scores[`player${state.value.currentPlayer}`]++
+  if (numberOfPlayers.value === 2) {
+    state.value.scores[`player${state.value.currentPlayer}`]++
+  }
   state.value.matchedPairs++
   state.value.flippedCards = []
 
   if (state.value.matchedPairs === state.value.totalPairs) {
     endGame()
-  } else {
-    updateTurnIndicator('Match! Go again.')
-    state.value.isLocked = false
+    return
   }
+
+  state.value.isLocked = false
 }
 
 function handleMismatch(card1, card2) {
   card1.isFlipped = false
   card2.isFlipped = false
-  state.value.currentPlayer = state.value.currentPlayer === 1 ? 2 : 1
+  if (numberOfPlayers.value === 1) {
+    mistakes.value++
+  } else {
+    state.value.currentPlayer = state.value.currentPlayer === 1 ? 2 : 1
+  }
   state.value.flippedCards = []
   state.value.isLocked = false
   updateTurnIndicator()
 }
 
 function endGame() {
-  let title
-  if (state.value.scores.player1 > state.value.scores.player2) {
-    title = 'Player 1 Wins!'
-  } else if (state.value.scores.player2 > state.value.scores.player1) {
-    title = 'Player 2 Wins!'
+  if (numberOfPlayers.value === 1) {
+    endGameInfo.value.title = 'Round Complete!'
+    endGameInfo.value.scores = `You made ${mistakes.value} mistakes.`
   } else {
-    title = "It's a Push!"
+    const p1Score = state.value.scores.player1
+    const p2Score = state.value.scores.player2
+    if (p1Score > p2Score) {
+      endGameInfo.value.title = 'Player 1 Wins!'
+    } else if (p2Score > p1Score) {
+      endGameInfo.value.title = 'Player 2 Wins!'
+    } else {
+      endGameInfo.value.title = "It's a Push!"
+    }
+    endGameInfo.value.scores = `Final Score: ${p1Score} - ${p2Score}`
   }
-  endGameInfo.value.title = title
-  endGameInfo.value.scores = `Final Score: ${state.value.scores.player1} - ${state.value.scores.player2}`
   gameStatus.value = 'ended'
 }
 
 function playAgain() {
+  gameStatus.value = 'selecting_players'
   state.value.level = null
-  gameStatus.value = 'selecting'
 }
 </script>
 
 <template>
   <main class="container">
-    <div v-if="gameStatus === 'selecting'" class="content-card">
+    <div v-if="gameStatus === 'selecting_players'" class="content-card">
+      <h1 class="title">Select Mode</h1>
+      <div class="buttons-container">
+        <button @click="setPlayerMode(1)" class="level-button low-stakes">1 Player</button>
+        <button @click="setPlayerMode(2)" class="level-button high-stakes">2 Players</button>
+      </div>
+    </div>
+
+    <div v-if="gameStatus === 'selecting_level'" class="content-card">
       <h1 class="title">Select Your Table</h1>
       <div class="buttons-container">
         <button @click="startGame('easy')" class="level-button low-stakes">Low Stakes</button>
@@ -172,10 +203,12 @@ function playAgain() {
     </div>
 
     <div v-else-if="gameStatus === 'playing'" class="game-container">
-      <div class="player-panel" :class="{ active: state.currentPlayer === 1 }">
-        <h2 class="player-title">Player 1</h2>
-        <div class="player-score">{{ state.scores.player1 }}</div>
-      </div>
+      <template v-if="numberOfPlayers === 2">
+        <div class="player-panel" :class="{ active: state.currentPlayer === 1 }">
+          <h2 class="player-title">Player 1</h2>
+          <div class="player-score">{{ state.scores.player1 }}</div>
+        </div>
+      </template>
 
       <div class="game-board-area">
         <h2 class="turn-indicator">{{ turnMessage }}</h2>
@@ -189,10 +222,12 @@ function playAgain() {
         </div>
       </div>
 
-      <div class="player-panel" :class="{ active: state.currentPlayer === 2 }">
-        <h2 class="player-title">Player 2</h2>
-        <div class="player-score">{{ state.scores.player2 }}</div>
-      </div>
+      <template v-if="numberOfPlayers === 2">
+        <div class="player-panel" :class="{ active: state.currentPlayer === 2 }">
+          <h2 class="player-title">Player 2</h2>
+          <div class="player-score">{{ state.scores.player2 }}</div>
+        </div>
+      </template>
     </div>
 
     <div v-else-if="gameStatus === 'ended'" class="content-card">
