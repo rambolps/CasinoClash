@@ -11,7 +11,7 @@ function GoToPlay() {
 <template>
   <main class="home-container">
     <div class="content-wrapper">
-      <div class="content-card">
+      <div class="content-card dShadow">
         <h1 class="title">CASINO CLASH</h1>
         <p class="subtitle">
           A two-player memory game of high stakes. Find the most pairs to win the pot!
@@ -44,7 +44,6 @@ function GoToPlay() {
   backdrop-filter: blur(8px);
   padding: 2rem;
   border-radius: 0.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   border: 2px solid rgba(250, 204, 21, 0.5);
 }
 
@@ -70,9 +69,6 @@ function GoToPlay() {
   padding: 0.75rem 2.5rem;
   border-radius: 0.375rem;
   font-size: 1.25rem;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
