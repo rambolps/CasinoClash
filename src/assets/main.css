@@ -1,21 +1,8 @@
 body {
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
+  font-family: 'Lora', serif;
+  background-color: #1a472a; /* Casino Green */
+  background-image: radial-gradient(#ffffff1a 1px, transparent 1px);
+  background-size: 15px 15px;
   padding: 0 !important;
   margin: 0 !important;
 }
