@@ -172,7 +172,7 @@ function endGame() {
     } else {
       endGameInfo.value.title = "It's a Tie!"
     }
-    endGameInfo.value.scores = `Final Score: Player 1: ${p1Score}, Player 2: ${p2Score}`
+    endGameInfo.value.scores = `Final Score: ${p1Score} - ${p2Score}`
   }
   gameStatus.value = 'ended'
 }
