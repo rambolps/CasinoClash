@@ -61,7 +61,7 @@ function shuffle(array) {
 function startGame(level) {
   state.value.level = level
   state.value.scores = { player1: 0, player2: 0 }
-  state.value.currentPlayer = 1
+  state.value.currentPlayer = Math.random() < 0.5 ? 1 : 2
   state.value.flippedCards = []
   state.value.matchedPairs = 0
   state.value.isLocked = true
@@ -90,8 +90,8 @@ function startGame(level) {
     setTimeout(() => {
       state.value.isLocked = false
       updateTurnIndicator()
-    }, 700)
-  }, 3000)
+    }, 500)
+  }, 5000)
 }
 
 function updateTurnIndicator() {
@@ -125,7 +125,7 @@ function checkForMatch() {
     } else {
       handleMismatch(card1, card2)
     }
-  }, 900)
+  }, 500)
 }
 
 function handleMatch(card1, card2) {
@@ -172,7 +172,7 @@ function endGame() {
     } else {
       endGameInfo.value.title = "It's a Tie!"
     }
-    endGameInfo.value.scores = `Final Score: ${p1Score} - ${p2Score}`
+    endGameInfo.value.scores = `Final Score: Player 1: ${p1Score}, Player 2: ${p2Score}`
   }
   gameStatus.value = 'ended'
 }
